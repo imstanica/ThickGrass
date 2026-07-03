@@ -4,7 +4,7 @@
 
 <p align="center">
   <strong>A self-hosted helpdesk and ticketing system for WordPress.</strong><br>
-  Tickets, SLAs, a knowledge base, canned responses, custom intake forms, and email-based approvals.
+  Tickets, SLAs, a knowledge base, canned responses, custom intake forms, and email-based approvals — all built on the plugin's own database tables.
 </p>
 
 <p align="center">
