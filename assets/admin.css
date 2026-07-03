@@ -1,0 +1,590 @@
+/*
+ * ThickGrass admin design system - see PLAN.md section 8.
+ * Small, deliberately minimal: rides on native WordPress admin styles
+ * (wrap, widefat, striped, form-table, notice, button) and only adds the
+ * handful of classes below, used the same way on every ThickGrass screen.
+ */
+
+:root {
+	--thickgrass-accent: #2e7d32;
+	--thickgrass-accent-light: #e6f4ea;
+	--thickgrass-red: #b32d2e;
+	--thickgrass-red-light: #fcf0f1;
+	--thickgrass-blue: #2271b1;
+	--thickgrass-blue-light: #e5f5fa;
+	--thickgrass-yellow: #dba617;
+	--thickgrass-yellow-light: #fff8e5;
+	--thickgrass-grey: #646970;
+}
+
+/* Page chrome */
+.thickgrass-wrap h1 {
+	border-left: 4px solid var(--thickgrass-accent);
+	padding-left: 10px;
+}
+
+.thickgrass-section-title {
+	margin-top: 28px;
+	border-bottom: 1px solid #dcdcde;
+	padding-bottom: 6px;
+}
+
+/*
+ * Two-column ticket form (Number/Caller/... | Created/State/...) -
+ * centered within its panel (margin: 16px auto), not pinned to the left edge.
+ */
+.thickgrass-form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 0 40px;
+	margin: 16px auto;
+	max-width: 900px;
+}
+
+/*
+ * No border-bottom divider between rows (PLAN.md: "scoate liniile
+ * despartitoare") - the panel's own border is enough separation from the
+ * rest of the page. align-items: start (not center) keeps the label pinned
+ * to the top of the row instead of drifting down as taller content (the
+ * category cascade's stacked selects, the Description textarea) grows the
+ * row's height.
+ */
+.thickgrass-form-row {
+	display: grid;
+	grid-template-columns: 150px 1fr;
+	gap: 8px;
+	align-items: start;
+	padding: 6px 0;
+}
+
+.thickgrass-form-row label {
+	font-weight: 600;
+}
+
+.thickgrass-form-row select {
+	width: 100%;
+	max-width: 260px;
+}
+
+/*
+ * Read-only fields (Number, Organization, Created, and the Description
+ * textarea) render as real <input readonly>/<textarea readonly> elements,
+ * not plain text, so every row has the same visual weight as an editable one
+ * (PLAN.md: "sa fie toate la fel") - grey background signals "not editable"
+ * the way disabled fields conventionally do.
+ */
+.thickgrass-form-value,
+.thickgrass-readonly-field {
+	background: #f6f7f7;
+	color: #1d2327;
+	cursor: default;
+}
+
+/*
+ * Width is capped separately (not merged into the rule above) so it never
+ * collides with genuinely editable text inputs sharing .thickgrass-readonly-field's
+ * sibling classes (e.g. Description uses .large-text - full width - while
+ * short single-line values like Organization stay select-sized).
+ */
+.thickgrass-form-value {
+	width: 100%;
+	max-width: 260px;
+}
+
+/*
+ * Search-select combobox (PLAN.md: "Caller/Location/Assigned to/Assignment
+ * group/Asset ar trebui sa fie search and select, nu dropdown") - a plain
+ * text input with our own dropdown list underneath, not `<input list>` +
+ * `<datalist>`: the native datalist popup is drawn entirely by the
+ * browser/OS with no CSS hooks, so it could never be recolored to match the
+ * rest of the design. This one is a normal `<ul>`, styled like everything else.
+ */
+.thickgrass-combobox {
+	position: relative;
+	width: 100%;
+	max-width: 260px;
+}
+
+.thickgrass-search-select {
+	width: 100%;
+}
+
+.thickgrass-combobox-list {
+	position: absolute;
+	z-index: 10;
+	top: 100%;
+	left: 0;
+	right: 0;
+	margin: 2px 0 0;
+	padding: 4px 0;
+	list-style: none;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	box-shadow: 0 2px 8px rgba( 0, 0, 0, .12 );
+	max-height: 220px;
+	overflow-y: auto;
+}
+
+.thickgrass-combobox-list li {
+	padding: 6px 10px;
+	cursor: pointer;
+}
+
+.thickgrass-combobox-list li:hover,
+.thickgrass-combobox-list li.is-active {
+	background: var(--thickgrass-accent-light);
+}
+
+@media (max-width: 782px) {
+	.thickgrass-form-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Dashboard stat boxes */
+.thickgrass-stats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 32px;
+	margin: 16px 0 24px;
+}
+
+a.thickgrass-stat-box {
+	display: block;
+	text-align: center;
+	min-width: 150px;
+	text-decoration: none;
+}
+
+.thickgrass-stat-box .thickgrass-stat-label {
+	display: block;
+	font-size: 13px;
+	margin-bottom: 4px;
+	color: var(--thickgrass-red);
+}
+
+.thickgrass-stat-box .thickgrass-stat-number {
+	font-size: 34px;
+	font-weight: 600;
+	color: var(--thickgrass-red);
+}
+
+.thickgrass-stat-box.is-zero .thickgrass-stat-label,
+.thickgrass-stat-box.is-zero .thickgrass-stat-number {
+	color: var(--thickgrass-grey);
+}
+
+/* Badges (status/priority/SLA pills) */
+.thickgrass-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.thickgrass-badge-green { background: var(--thickgrass-accent-light); color: #1e4620; }
+.thickgrass-badge-red { background: var(--thickgrass-red-light); color: #8a2424; }
+.thickgrass-badge-blue { background: var(--thickgrass-blue-light); color: #0a4b78; }
+
+/*
+ * Activity feed (comments + field changes) - the canonical "panel" look
+ * (see .thickgrass-card below, and PLAN.md section 8: "Panou generic") is
+ * .thickgrass-card; .thickgrass-feed-panel only overrides its padding so
+ * feed items can supply their own vertical rhythm via border-bottom instead
+ * of double padding at the top/bottom of the panel. Written as a compound
+ * selector (not just `.thickgrass-feed-panel`) so this override always wins
+ * over .thickgrass-card's own padding regardless of declaration order.
+ */
+.thickgrass-card.thickgrass-feed-panel {
+	padding: 4px 16px;
+}
+
+.thickgrass-feed-item {
+	display: flex;
+	gap: 10px;
+	padding: 14px 0;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.thickgrass-feed-item:last-child {
+	border-bottom: none;
+}
+
+.thickgrass-feed-body {
+	flex: 1;
+}
+
+/* Name on the left, "Type • date" on the right, same line. */
+.thickgrass-feed-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 12px;
+	margin: 0 0 4px;
+}
+
+.thickgrass-feed-meta {
+	color: var(--thickgrass-grey);
+}
+
+.thickgrass-avatar {
+	flex: 0 0 32px;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: var(--thickgrass-accent);
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 600;
+}
+
+.thickgrass-note {
+	padding: 8px 12px;
+	border-left: 4px solid;
+}
+
+.thickgrass-note-comment {
+	background: var(--thickgrass-blue-light);
+	border-left-color: var(--thickgrass-blue);
+}
+
+.thickgrass-note-worknote {
+	background: var(--thickgrass-yellow-light);
+	border-left-color: var(--thickgrass-yellow);
+}
+
+.thickgrass-note-fieldchange {
+	background: #f6f7f7;
+	border-left-color: var(--thickgrass-grey);
+}
+
+.thickgrass-field-change {
+	padding: 2px 0;
+}
+
+.thickgrass-note-email details {
+	margin-top: 6px;
+}
+
+.thickgrass-note-email summary {
+	cursor: pointer;
+	color: var(--thickgrass-blue);
+}
+
+.thickgrass-attachment-image {
+	max-width: 320px;
+	max-height: 240px;
+	display: block;
+	border-radius: 4px;
+}
+
+/* Ticket attachment upload - compact single-row dropzone */
+.thickgrass-attachment-form {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.thickgrass-dropzone {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	border: 2px dashed #c3c4c7;
+	border-radius: 4px;
+	padding: 6px 10px;
+}
+
+.thickgrass-dropzone span {
+	color: var(--thickgrass-grey);
+	font-size: 12px;
+}
+
+/* Ticket approval requests list */
+.thickgrass-approval-list {
+	list-style: none;
+	margin: 0 0 12px;
+	padding: 0;
+}
+
+.thickgrass-approval-list li {
+	padding: 6px 0;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+.thickgrass-approval-list li:last-child {
+	border-bottom: none;
+}
+
+.thickgrass-dropzone.is-dragover {
+	border-color: var(--thickgrass-blue);
+	background: var(--thickgrass-blue-light);
+}
+
+/* Ticket detail header (Back to list + Send email / Save actions) */
+.thickgrass-detail-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+/* "Send email" popup */
+.thickgrass-modal {
+	display: none;
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 100000;
+	align-items: center;
+	justify-content: center;
+}
+
+.thickgrass-modal.is-open {
+	display: flex;
+}
+
+.thickgrass-modal-content {
+	background: #fff;
+	border-radius: 4px;
+	padding: 20px;
+	width: 500px;
+	max-width: 90%;
+	max-height: 85vh;
+	overflow-y: auto;
+	position: relative;
+}
+
+.thickgrass-modal-close {
+	position: absolute;
+	top: 10px;
+	right: 14px;
+	background: none;
+	border: none;
+	font-size: 22px;
+	line-height: 1;
+	cursor: pointer;
+	color: var(--thickgrass-grey);
+}
+
+/*
+ * Comment box (PLAN.md 7.46): textarea on the left, the canned response/KB
+ * "insert" search-selects stacked in a narrow sidebar on the right, instead
+ * of stacked above the textarea - keeps them next to where their result
+ * lands. Falls back to a stacked column on narrow screens, same breakpoint
+ * as .thickgrass-form-grid above.
+ */
+.thickgrass-comment-layout {
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+}
+
+.thickgrass-comment-main {
+	flex: 1;
+	min-width: 0;
+}
+
+.thickgrass-comment-sidebar {
+	flex: 0 0 240px;
+}
+
+/* Label above the field instead of beside it - .thickgrass-form-row's usual
+ * 150px label column doesn't leave enough room in this narrow sidebar. */
+.thickgrass-comment-sidebar .thickgrass-form-row {
+	grid-template-columns: 1fr;
+	gap: 2px;
+	padding: 0 0 10px;
+}
+
+@media (max-width: 782px) {
+	.thickgrass-comment-layout {
+		flex-direction: column;
+	}
+
+	.thickgrass-comment-sidebar {
+		flex-basis: auto;
+		width: 100%;
+	}
+}
+
+/*
+ * Copyable shortcode box (Knowledge Base / Custom forms - PLAN.md 7.46).
+ */
+.thickgrass-shortcode-box input[type="text"] {
+	max-width: 420px;
+}
+
+/*
+ * "Configurable lists" navigation - a vertical sidebar instead of WP core's
+ * `nav-tab-wrapper` (PLAN.md 7.47: with 19 tabs, a wrapping horizontal row
+ * of pill buttons no longer read well - "lista s-a facut destul de lunga si
+ * nu apare prea ok").
+ */
+.thickgrass-choices-layout {
+	display: flex;
+	align-items: flex-start;
+	gap: 24px;
+	margin-top: 16px;
+}
+
+.thickgrass-choices-nav {
+	flex: 0 0 200px;
+	display: flex;
+	flex-direction: column;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.thickgrass-choices-nav-item {
+	display: block;
+	padding: 10px 14px;
+	border-bottom: 1px solid #f0f0f1;
+	text-decoration: none;
+	color: #1d2327;
+}
+
+.thickgrass-choices-nav-item:last-child {
+	border-bottom: none;
+}
+
+.thickgrass-choices-nav-item:hover {
+	background: #f6f7f7;
+}
+
+.thickgrass-choices-nav-item.is-active {
+	background: var(--thickgrass-accent-light);
+	border-left: 3px solid var(--thickgrass-accent);
+	padding-left: 11px;
+	font-weight: 600;
+}
+
+/*
+ * Two stacked, separated nav groups ("Configurable lists" / "Settings" -
+ * PLAN.md 7.48: "2 meniuri, unul sub altul... separate putin") sharing one
+ * sidebar, plus indented "sub-items" (visually grouped under the item just
+ * above them, e.g. Statuses -> On hold reasons/Close reason) within a group.
+ */
+.thickgrass-choices-nav-group-title {
+	padding: 10px 14px 6px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	color: var(--thickgrass-grey);
+	background: #f6f7f7;
+}
+
+.thickgrass-choices-nav-group-title:not(:first-child) {
+	margin-top: 10px;
+	border-top: 1px solid #dcdcde;
+}
+
+.thickgrass-choices-nav-item.is-sub-item {
+	padding-left: 26px;
+	font-size: 13px;
+	color: var(--thickgrass-grey);
+}
+
+.thickgrass-choices-nav-item.is-sub-item.is-active {
+	padding-left: 23px;
+}
+
+.thickgrass-choices-content {
+	flex: 1;
+	min-width: 0;
+}
+
+/*
+ * "Modern" design (PLAN.md 7.50/7.51) for every flat Choices list - a
+ * responsive card grid instead of the plain WP `<table>`, paired with the
+ * Add/Edit form moved into a popup (`.thickgrass-modal`) instead of always
+ * sitting above the list. Piloted on Assignment groups first, then rolled
+ * out to the rest.
+ */
+.thickgrass-modern-add-row {
+	text-align: right;
+}
+
+.thickgrass-modern-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 14px;
+	margin: 14px 0;
+}
+
+.thickgrass-modern-card {
+	background: #fff;
+	border: 1px solid #e2e4e7;
+	border-radius: 8px;
+	padding: 14px 16px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+	transition: box-shadow .15s ease, transform .15s ease;
+}
+
+.thickgrass-modern-card:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+	transform: translateY(-1px);
+}
+
+.thickgrass-modern-card-title {
+	font-size: 15px;
+	font-weight: 600;
+	margin-bottom: 6px;
+}
+
+.thickgrass-modern-card-description,
+.thickgrass-modern-card-meta {
+	color: var(--thickgrass-grey);
+	font-size: 13px;
+	margin: 0 0 6px;
+}
+
+/* Always shown on hierarchical lists (category, kb_category) so "nothing
+ * shown" is never ambiguous with "top-level" - see render_modern_list(). */
+.thickgrass-modern-card-parent {
+	font-style: italic;
+}
+
+.thickgrass-modern-card-actions {
+	margin-top: 12px;
+	padding-top: 10px;
+	border-top: 1px solid #f0f0f1;
+	display: flex;
+	gap: 14px;
+	font-size: 13px;
+}
+
+@media (max-width: 782px) {
+	.thickgrass-choices-layout {
+		flex-direction: column;
+	}
+
+	.thickgrass-choices-nav {
+		flex-basis: auto;
+		width: 100%;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.thickgrass-choices-nav-item {
+		flex: 1 1 auto;
+		border-right: 1px solid #f0f0f1;
+	}
+}
+
+/* Generic content card (used where a boxed block of content is needed) */
+.thickgrass-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	padding: 10px 14px;
+	margin-bottom: 10px;
+}
